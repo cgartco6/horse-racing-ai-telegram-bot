@@ -1,18 +1,30 @@
 import pandas as pd
-from config.settings import FEATURES
+import joblib
+from config.settings import FEATURES, MODEL_VERSION, HISTORICAL_DATA_FILE
+from utils.logger import setup_logger
 
-def load_historical_data(file_path='data/historical_results.csv'):
+logger = setup_logger()
+
+def load_training_data():
+    """Load training data with validation"""
     try:
-        df = pd.read_csv(file_path)
-        # Ensure we have the required columns
-        required_columns = FEATURES + ['outcome']
-        if set(required_columns).issubset(df.columns):
-            return df
-        else:
-            raise ValueError("Historical data is missing required columns.")
-    except FileNotFoundError:
-        # Return empty DataFrame with required columns
-        return pd.DataFrame(columns=required_columns)
+        data = pd.read_csv(HISTORICAL_DATA_FILE)
+        required_cols = FEATURES + ['outcome']
+        
+        if not set(required_cols).issubset(data.columns):
+            logger.error("Missing columns in training data")
+            return None
+        
+        return data[required_cols]
+    except Exception as e:
+        logger.error(f"Data loading failed: {str(e)}")
+        return None
 
-def save_historical_data(df, file_path='data/historical_results.csv'):
-    df.to_csv(file_path, index=False)
+def load_production_model():
+    """Load current production model"""
+    try:
+        model_path = f'models/model_v{MODEL_VERSION}.pkl'
+        return joblib.load(model_path)
+    except Exception as e:
+        logger.error(f"Model loading failed: {str(e)}")
+        return None
