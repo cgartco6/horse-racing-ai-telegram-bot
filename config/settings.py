@@ -1,8 +1,8 @@
 import os
 import pytz
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHANNEL_ID = os.getenv("CHANNEL_ID")
+TELEGRAM_TOKEN = os.getenv("7881119044:AAG8QVhVD-muuIGAnTu4EjZHdDfdVRrwAQY")
+CHANNEL_ID = os.getenv("-1002722776313")
 TIMEZONE = pytz.timezone("Europe/London")
 
 # AI Model Parameters
